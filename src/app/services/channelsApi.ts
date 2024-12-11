@@ -40,3 +40,17 @@ export const channelsApi = api.injectEndpoints({
 		})
 	})
 })
+
+const {
+	useCreateChannelMutation,
+	useAddUserMutation,
+	useJoinChannelMutation,
+	useDeleteUserMutation,
+	useSendMessageMutation
+} = channelsApi
+
+export const {
+	endpoints: {
+		createChannel, addUser, joinChannel, deleteUser, sendMessage
+	}
+} = channelsApi;
