@@ -14,7 +14,7 @@ export const Nav = () => {
         <ChatItem name='Chatgram' time='19:53' lastMessage='dlpaoid adas fdsfg' />
         {channels ? channels.map((channel) => (
           <ChatItem 
-            key={channel.id} // Убедитесь, что у каждого чата есть уникальный идентификатор
+            key={channel.id}
             name={channel.name}
             time='19:44'
             lastMessage='test'
