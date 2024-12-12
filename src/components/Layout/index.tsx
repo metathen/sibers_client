@@ -4,6 +4,7 @@ import styled from './index.module.css'
 import { useSelector } from 'react-redux'
 import { selectIsAuth, selectUser } from '../../features/user-slice'
 import { useNavigate } from 'react-router-dom'
+import { ChatContent } from '../ChatContent'
 
 export const Layout = () => {
 	const  isAuthenticated = useSelector(selectIsAuth);
@@ -18,6 +19,7 @@ export const Layout = () => {
 		<div className={styled.box}>
 			<div className={styled.chat}>
 				<Nav />
+				<ChatContent />
 			</div>
 		</div>
 	)
