@@ -4,11 +4,11 @@ import { BASE_URL } from "../../const";
 
 const baseQuery = fetchBaseQuery({
 	baseUrl: `${BASE_URL}/k`,
-	// prepareHeaders: (headers, {getState}) => { //set auth token
-	// 	const token = (getState() as RootState).auth.token || localStorage.getItem('token');
-	// 	if(token) headers.set('authorization', `Bearer ${token}`);
-	// 	return headers;
-	// }
+	prepareHeaders: (headers, {getState}) => { //set auth token
+		const token = (getState() as RootState).auth.token || localStorage.getItem('token');
+		if(token) headers.set('authorization', `Bearer ${token}`);
+		return headers;
+	}
 })
 
 const baseQueryWithRetry = retry(baseQuery, {maxRetries: 1});//repeated requests

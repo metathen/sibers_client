@@ -29,22 +29,22 @@ export const userApi = api.injectEndpoints({
 				method: "GET"
 			})
 		}),
-		serachUser: builder.query<{username: string}, void>({
-			query: () => ({
+		serachUser: builder.mutation<{username: string}, void>({
+			query: (body) => ({
 				url: '/search',
-				method: 'GET'
+				method: 'POST',
+				body
 			})
 		})
 	})
 })
 
-const {
+export const {
 	useRegisterMutation,
 	useLoginMutation,
 	useCurrentQuery,
 	useLazyCurrentQuery,
-	useSerachUserQuery,
-	useLazySerachUserQuery
+	useSerachUserMutation
 } = userApi;
 
 export const {

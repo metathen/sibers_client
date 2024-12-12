@@ -41,7 +41,7 @@ export const channelsApi = api.injectEndpoints({
 	})
 })
 
-const {
+export const {
 	useCreateChannelMutation,
 	useAddUserMutation,
 	useJoinChannelMutation,
