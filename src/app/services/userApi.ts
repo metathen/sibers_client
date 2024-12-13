@@ -29,7 +29,14 @@ export const userApi = api.injectEndpoints({
 				method: "GET"
 			})
 		}),
-		serachUser: builder.mutation<{username: string}, void>({
+		getUserById: builder.mutation<User, {userId: string}>({
+			query: (userData) => ({
+				url: `/user`,
+				method: "POST",
+				body: userData
+			}),
+		}),
+		serachUser: builder.mutation<{username: string}[], {username: string}>({
 			query: (body) => ({
 				url: '/search',
 				method: 'POST',
@@ -44,9 +51,10 @@ export const {
 	useLoginMutation,
 	useCurrentQuery,
 	useLazyCurrentQuery,
-	useSerachUserMutation
+	useSerachUserMutation,
+	useGetUserByIdMutation
 } = userApi;
 
 export const {
-	endpoints: {login, register, current, serachUser}
+	endpoints: {login, register, current, serachUser, getUserById}
 } = userApi;
