@@ -13,7 +13,7 @@ export const channelsApi = api.injectEndpoints({
 		addUser: builder.mutation<{channelId: string, userId: string}, {channelId: string, userId: string}>({
 			query: (channelData) => ({
 				url: '/add',
-				method: "PUT",
+				method: "POST",
 				body: channelData
 			})
 		}),
@@ -31,6 +31,19 @@ export const channelsApi = api.injectEndpoints({
 				body: deleteData
 			})
 		}),
+		getAllMessages: builder.mutation<Messages[], {channelId: string}>({
+			query: (allMesagesData) => ({
+				url: '/get-messages',
+				method: "POST",
+				body: allMesagesData
+			})
+		}),
+		getChannelById: builder.query<Channels, string>({
+			query: (id) => ({
+				url: `/channels/${id}`,
+				method: "GET"
+			}),
+		}),
 		sendMessage: builder.mutation<Messages, {channelId: string; text: string}>({
 			query: (messageData) => ({
 				url: '/send-message',
@@ -46,11 +59,14 @@ export const {
 	useAddUserMutation,
 	useJoinChannelMutation,
 	useDeleteUserMutation,
-	useSendMessageMutation
+	useSendMessageMutation,
+	useGetAllMessagesMutation,
+	useGetChannelByIdQuery,
+	useLazyGetChannelByIdQuery
 } = channelsApi
 
 export const {
 	endpoints: {
-		createChannel, addUser, joinChannel, deleteUser, sendMessage
+		createChannel, addUser, joinChannel, deleteUser, getAllMessages, getChannelById, sendMessage
 	}
 } = channelsApi;
