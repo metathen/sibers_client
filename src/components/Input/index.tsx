@@ -1,10 +1,9 @@
 import { Input } from '@nextui-org/react';
-import React from 'react'
 import { Control, useController } from 'react-hook-form';
 
 type Props = {
 	name: string;
-	label: string;
+	label?: string;
 	placeholder?: string;
 	type?: string;
 	control: Control<any>;
