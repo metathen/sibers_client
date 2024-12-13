@@ -5,8 +5,29 @@ import App from "./App"
 import { store } from "./app/store"
 import "./index.css"
 import {NextUIProvider} from "@nextui-org/react";
+import { createBrowserRouter, RouterProvider } from "react-router-dom"
+import { Auth } from "./pages/Auth"
+import { Layout } from "./components/Layout"
+import { AuthGuard } from "./features/authGuard"
 
 const container = document.getElementById("root")
+
+const router = createBrowserRouter([
+  {
+    path: '/auth',
+    element: <Auth />
+  },
+  {
+    path: '/',
+    element: <Layout />,
+    children: [
+      {
+        path: '/channels/:id',
+        element: <Layout />
+      }
+    ]
+  }
+]);
 
 if (container) {
   const root = createRoot(container)
@@ -15,7 +36,9 @@ if (container) {
     <React.StrictMode>
       <Provider store={store}>
         <NextUIProvider>
-          <App />
+          <AuthGuard>
+            <RouterProvider router={router} />
+          </AuthGuard>
         </NextUIProvider>
       </Provider>
     </React.StrictMode>,
