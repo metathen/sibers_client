@@ -1,5 +1,6 @@
-import React, { useEffect, useState } from 'react'
+import React, { useCallback, useEffect, useState } from 'react'
 import styled from '../Nav/index.module.css';
+import { debounce } from 'lodash';
 import { Autocomplete, AutocompleteItem, Input, Button, Avatar } from '@nextui-org/react';
 import { useSerachUserMutation } from '../../app/services/userApi';
 
@@ -8,22 +9,26 @@ export const Search: React.FC = () => {
 	const [searchUser, { data, isLoading, isError }] = useSerachUserMutation();
 	const [users, setUsers] = useState<any[]>([]);
 
-	useEffect(() => {
-		if (username.length > 2) {
-			const fetchData = async () => {
+	const debouncedSearch = useCallback( //optimization server request
+		debounce(async (value: string) => {
+			if (value.length > 2) {
 				try {
-					const response = await searchUser({username}).unwrap();
+					const response = await searchUser({ username: value }).unwrap();
 					setUsers(response);
 				} catch (error) {
 					console.error('Error fetching users:', error);
 				}
-			};
+			} else {
+					setUsers([]);
+			}
+		}, 300),
+		[searchUser]
+	);
 
-			fetchData();
-		} else {
-			setUsers([]); //clear user list
-		}
-	}, [username, searchUser]);
+	useEffect(() => {
+		debouncedSearch(username);
+		return () => debouncedSearch.cancel();
+	}, [username, debouncedSearch]);
 	return (
 		<div className={styled['chat-head']}>
 			{/* <Input type="text" labelPlacement="outside" placeholder="Search" onChange={(e) => setUsername(e.target.value)} /> */}
@@ -34,7 +39,12 @@ export const Search: React.FC = () => {
 					listboxWrapper: "max-h-[320px]",
 					selectorButton: "text-default-500",
 				}}
-				defaultItems={users}
+				items={users.map((user) => ({
+					id: user.id,
+					name: user.username,
+					avatar: user.avatarurl,
+					team: user.team || "Unknown",
+				}))}
 				inputProps={{
 					classNames: {
 					input: "ml-1",
@@ -57,7 +67,7 @@ export const Search: React.FC = () => {
 					],
 					},
 				}}
-				placeholder="Enter employee name"
+				placeholder="Search user"
 				popoverProps={{
 					offset: 10,
 					classNames: {
@@ -67,30 +77,21 @@ export const Search: React.FC = () => {
 				}}
 				radius="full"
 				variant="bordered"
-				onChange={(e) => setUsername(e.target.value)}
+				onInputChange={(e) => setUsername(e)}
 			>
 				{(item) => (
 					<AutocompleteItem key={item.id} textValue={item.name}>
-					<div className="flex justify-between items-center">
-						<div className="flex gap-2 items-center">
-						<Avatar alt={item.name} className="flex-shrink-0" size="sm" src={item.avatar} />
-						<div className="flex flex-col">
-							<span className="text-small">{item.name}</span>
-							<span className="text-tiny text-default-400">{item.team}</span>
+						<div className="flex justify-between items-center">
+							<div className="flex gap-2 items-center">
+								<Avatar alt={item.name} className="flex-shrink-0" size="sm" src={item.avatar} />
+								<div className="flex flex-col">
+									<span className="text-small">{item.name}</span>
+								</div>
+							</div>
 						</div>
-						</div>
-						<Button
-						className="border-small mr-0.5 font-medium shadow-small"
-						radius="full"
-						size="sm"
-						variant="bordered"
-						>
-						Add
-						</Button>
-					</div>
 					</AutocompleteItem>
 				)}
-				</Autocomplete>
+			</Autocomplete>
 		</div>
 	)
 }
