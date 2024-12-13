@@ -15,3 +15,34 @@ code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, "Courier New",
     monospace;
 }
+
+:root {
+  font-size: 16px;
+  --txt-main: #011627;
+  --txt-sub: #707991;
+  --bd-gray: #D9DCE0;
+  --bd-s-1: .75rem;
+  --bd-s-2: 1.375rem;
+  --bd-s-circle: 50%;
+  --noti-bg: #78E378;
+  --sch-bg: #F5F5F5;
+  --red: #F71735;
+  --white: #FFFFFF;
+  --black: #000000;
+}
+
+.t-light {
+  font-weight: 300;
+}
+.t-regular {
+  font-weight: 400;
+}
+.t-medium {
+  font-weight: 500;
+}
+.t-smb {
+  font-weight: 600;
+}
+.t-bold {
+  font-weight: 700;
+}

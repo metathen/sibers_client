@@ -1,9 +1,10 @@
 import { Button } from "@nextui-org/react"
+import { Layout } from "./components/Layout"
 
 const App = () => {
   return (
     <div>
-      <Button color="primary">Button</Button>
+      <Layout />
     </div>
   )
 }
