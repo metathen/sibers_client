@@ -1,31 +1,68 @@
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import styled from './index.module.css';
 import { ChatItem } from '../ChatItem';
 import { Search } from '../Search';
 import { useAppSelector } from '../../hooks';
 import { useNavigate } from 'react-router-dom';
+import { useGetAllMessagesMutation } from '../../app/services/channelsApi';
+import useSocket from '../../hooks/send-message';
+import { Messages } from '../../app/types';
 
 export const Nav = () => {
-	const channels = useAppSelector((state) => state.auth.user?.Channels);
+	const channels = useAppSelector((state) => state.auth.user?.channels);
   const navigate = useNavigate();
-  console.log(channels);
   const handleChannelClick = (channelId: string) => {
     navigate(`/channels/${channelId}`);
   };
+  const [lastMessages, setLastMessages] = useState<{ [channelId: string]: string }>({}); // save the last messages
+  const [getAllMessages, { isLoading, isError }] = useGetAllMessagesMutation();
+
+  const fetchLastMessages = async () => {
+    if (!channels) return;
+
+    // get the last message
+    for (const channel of channels) {
+      try {
+        const messages = await getAllMessages({channelId: channel.id}).unwrap();
+        const lastMessage = messages[messages.length - 1]; //get the last message
+        setLastMessages((prev) => ({
+          ...prev,
+          [channel.id]: lastMessage ? lastMessage.text : 'No messages yet', // save message
+        }));
+      } catch (error) {
+        console.error('Error fetching messages:', error);
+      }
+    }
+  };
+  const handleNewMessage = (message: Messages) => {
+    setLastMessages((prev) => ({
+      ...prev,
+      [message.channelId]: message.text, //update last message
+    }));
+  };
+
+  const socketConnections = channels?.map((channel) => {
+    return useSocket({
+      channelId: channel.id,
+      onReceiveMessage: handleNewMessage,
+    });
+  });
+
+  useEffect(() => {
+    fetchLastMessages();
+  }, [channels]);
   return (
 	  <div className={styled['chat-nav']}>
       <Search />
       <div className={styled['chat-list']}>
-        <ChatItem name='Chatgram' time='19:53' lastMessage='dlpaoid adas fdsfg' />
         {channels ? channels.map((channel) => (
-          <div className={styled['chat-item'] + 'w-[100%]'}
+          <div key={channel.id} className={styled['chat-item'] + 'w-[100%]'}
             onClick={() => handleChannelClick(channel.id)}
           >
             <ChatItem 
-              key={channel.id}
               name={channel.name}
-              time='19:44'
-              lastMessage='test'
+              time={lastMessages[channel.id]}
+              lastMessage={lastMessages[channel.id]}
             />
           </div>
         )) : false}
