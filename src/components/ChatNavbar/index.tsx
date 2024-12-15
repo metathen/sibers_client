@@ -14,7 +14,6 @@ import { useEffect, useState } from "react";
 import { useDeleteUserMutation, useGetChannelByIdQuery, useJoinChannelMutation } from "../../app/services/channelsApi";
 import { useGetUserByIdMutation } from "../../app/services/userApi";
 import { User } from "../../app/types";
-import { ErrorMessage } from "../Error";
 import { errorField } from "../../utils/error-field";
 
 export const ChatNavbar = () => {
@@ -40,27 +39,17 @@ export const ChatNavbar = () => {
 	//get channel data
 	const { data: channel, isLoading: isChannelLoading, error: channelError } = useGetChannelByIdQuery(id || "");
 
-	const users = channel?.members;
+	useEffect(() => {
+		if (channel?.members) {
+		  setUserList(channel.members);
+		}
+	}, [channel?.members]);
   
 	const [isUserInChannel, setIsUserInChannel] = useState<boolean>(false);
 
 	const [joinChannel, { isLoading }] = useJoinChannelMutation() //for join in the channel
 
 	const [getUserById, { error }] = useGetUserByIdMutation();
-
-	const fetchUsers = async () => {
-		try {
-			const usersData = await Promise.all(
-				users?.map(async (member) => {
-					const userData = await getUserById({ userId: member.id }).unwrap();
-					return userData;
-				}) || []
-			);
-			setUserList(usersData);
-		} catch (err) {
-		  	console.error("Error fetching user data:", err);
-		}
-	};
 
 	const handleDelete = async (userId: string) => { //function delete the user
 		try {
@@ -75,12 +64,6 @@ export const ChatNavbar = () => {
 			}
 		}
 	};
-
-	useEffect(() => {
-		if (users && users.length > 0) {
-		  	fetchUsers();
-		}
-	}, [users]);
   
 	//сheck if the user is a member of this chat
 	useEffect(() => {
@@ -92,8 +75,6 @@ export const ChatNavbar = () => {
 	}, [id, user]);
 
 	const handleSign = async () => { //function join
-		if (!id) return;
-	
 		try {
 			const response = await joinChannel({ channelId: id }).unwrap(); //start endpoint
 			// Update UI
@@ -102,7 +83,6 @@ export const ChatNavbar = () => {
 		  	console.error("Error joining channel:", error);
 		}
 	};
-
 	return (
 		<Navbar isBordered>
 			<NavbarBrand className="flex gap-2 align-center cursor-pointer" onClick={onOpen}>
@@ -160,15 +140,11 @@ export const ChatNavbar = () => {
 			</Modal>
 			<NavbarContent justify="end">
 				<NavbarItem className="flex gap-2">
-					{isUserInChannel ? (
-						<Button color="danger" onPress={() => console.log("Leave Channel")}>
-							Leave
-						</Button>
-					) : (
+					{!isUserInChannel &&
 						<Button color="secondary" onPress={handleSign}>
 							{isLoading ? "Signing..." : "Sign"}
 						</Button>
-					)}
+					}
 				</NavbarItem>
 			</NavbarContent>
 		</Navbar>
