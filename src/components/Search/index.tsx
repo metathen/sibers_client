@@ -11,7 +11,7 @@ export const Search: React.FC = () => {
 
 	const debouncedSearch = useCallback( //optimization server request
 		debounce(async (value: string) => {
-			if (value.length > 2) {
+			if (value.length > 0) {
 				try {
 					const response = await searchUser({ username: value }).unwrap();
 					setUsers(response);
@@ -19,7 +19,7 @@ export const Search: React.FC = () => {
 					console.error('Error fetching users:', error);
 				}
 			} else {
-					setUsers([]);
+				setUsers([]);
 			}
 		}, 300),
 		[searchUser]
