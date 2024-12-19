@@ -7,13 +7,12 @@ type Props = {
 	isMe: boolean;
 	createdAt: Date;
 	name: string;
-	id: string;
 }
 
-export const Message = ({text, senderId, isMe, createdAt, id, name}: Props) => {
+export const Message = ({text, senderId, isMe, createdAt, name}: Props) => {
 	if (!name) return <div>Error: User name is missing</div>;
 	return (
-		<div className={`flex w-[100%] mb-2`} key={id}>
+		<div className={`flex w-[100%] mb-2`}>
 			{isMe ? (
 				<div className="w-[100%] flex gap-2 justify-end">
 					<Card className={`pt-2 pb-2 pr-8 pl-4 inline-block rounded-small`}>{text}</Card>
