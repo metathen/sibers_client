@@ -1,1 +1,4 @@
-export const BASE_URL = process.env.NODE_ENV === 'production' ? 'none' : 'http://localhost:3080'
+import { io } from "socket.io-client";
+
+export const BASE_URL = 'http://localhost:3000';
+export const socketConst = io(BASE_URL);
