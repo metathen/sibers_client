@@ -2,21 +2,21 @@ export type User = {
 	id: string;
 	username: string;
 	password: string;
-	avatarUrl?: string;
+	avatarUrl?: string | null;
 	createdAt: Date;
 	updatedAt: Date;
-	Channels: Channels[];
-	Messages: Messages[];
+	channels: Channels[];
+	messages: Messages[];
 }
 export type Channels = {
 	id: string;
 	name: string;
-	members: string[];
+	members: User[];
 	creatorId: string;
 	createdAt: Date;
 	updatedAt: Date;
-	Messages: Messages[];
-	User?: User;
+	messages: Messages[];
+	user?: User;
 	userId?: string;
 
 }
