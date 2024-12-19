@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { useCallback, useEffect, useState } from 'react'
 import { useParams } from 'react-router-dom'
 import { useGetAllMessagesMutation } from '../../app/services/channelsApi';
 import { Messages } from '../../app/types';
@@ -15,10 +15,13 @@ export const ChatContent = () => {
 	const [messages, setMessages] = useState<Messages[]>([]);
 	const [getAllMessages] = useGetAllMessagesMutation();
 
-	//Connect with socket
-	const socketFunction = (message: Messages) => setMessages((prev) => (Array.isArray(prev) ? [...prev, message] : [message]));
-
-	useSocket({channelId: id || '', onReceiveMessage: socketFunction});
+	const socketFunction = (message: Messages) => setMessages((prev) => [...prev, message]);
+	//Connect with socket for message
+	useSocket({channelId: id || '', 
+		onReceiveMessage: (message) => {
+			socketFunction(message);
+		}
+	});
 	
 	//load messages
 	useEffect(() => {
@@ -38,7 +41,7 @@ export const ChatContent = () => {
 			<ChatNavbar />
 			<div className={styled['chat-box']}>
 				<div className={'flex flex-col justify-end pr-20 pl-20'}>{messages && messages.length > 0 ? (
-						messages.map((item) => (<Message id={item.id} text={item.text} senderId={item.senderId} name={item.sender.username} isMe={item.senderId == user ? true : false} createdAt={item.createdAt} />))
+						messages.map((item) => (<Message key={item.id} text={item.text} senderId={item.senderId} name={item.sender.username} isMe={item.senderId == user ? true : false} createdAt={item.createdAt} />))
 					) : 
 						<p>Doesnt have any messages</p>
 					}
