@@ -6,12 +6,16 @@ Uses [Vite](https://vitejs.dev/), [Vitest](https://vitest.dev/), and [React Test
 npx degit reduxjs/redux-templates/packages/vite-template-redux my-app
 ```
 
-## Goals
+## Start
+It is necessary to upload the server-side part of the project.(https://github.com/metathen/sibers_server)
+Deploy the server and update the data in the .env file with the current data of your PostgreSQL(username and password) and start migrations the database.
 
-- Easy migration from Create React App or Vite
-- As beginner friendly as Create React App
-- Optimized performance compared to Create React App
-- Customizable without ejecting
+Next, you need to copy and deploy the client
+```sh
+git clone https://github.com/metathen/sibers_client
+npm run start
+```
+To run the project, you need free ports specified in the .env and configuration files.
 
 ## Scripts
 
