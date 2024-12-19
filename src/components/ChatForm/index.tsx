@@ -1,8 +1,8 @@
 import { Button, Card, Input } from "@nextui-org/react"
-import { InputProject } from "../Input"
 import { useForm } from "react-hook-form";
 import { useState } from "react";
 import { useSendMessageMutation } from "../../app/services/channelsApi";
+import { socketConst } from "../../const";
 
 type SendMessageProps = {
 	channelId: string;
@@ -16,7 +16,9 @@ export const ChatForm = ({channelId}: SendMessageProps) => {
 		if (!text) return;
 
 		try {
-			await sendMessage({ channelId, text }).unwrap();
+			const senderObject = await sendMessage({ channelId, text }).unwrap();
+			console.log(senderObject);
+			socketConst.emit('sendMessage', senderObject);
 			setText('');
 		} catch (err) {
 			console.error('Error sending message:', err);
@@ -36,11 +38,13 @@ export const ChatForm = ({channelId}: SendMessageProps) => {
 	return (
 		<div className="pl-10 pr-10">
 			<Card className="flex mr-18 ml-18">
-				<Input
-					value={text}
-					onChange={(e) => setText(e.target.value)}
-				/>
-				<Button isIconOnly color="secondary" onPress={handleSendMessage}>{'>'}</Button>
+				<div className="flex">
+					<Input
+						value={text}
+						onChange={(e) => setText(e.target.value)}
+					/>
+					<Button isIconOnly color="secondary" onPress={handleSendMessage}>{'>'}</Button>
+				</div>
 			</Card>
 		</div>
 	)
