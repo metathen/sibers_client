@@ -11,8 +11,13 @@ import {
 import styled from './index.module.css';
 import { useState } from "react";
 import { useCreateChannelMutation } from "../../app/services/channelsApi";
+import { Channels } from "../../app/types";
 
-export const AddChannel = () => {
+type CreateChannelProps = {
+	onAddChannel: (channel: Channels) => void;
+};
+
+export const AddChannel = ({ onAddChannel }: CreateChannelProps) => {
 	const {isOpen, onOpen, onOpenChange} = useDisclosure();
 	const [channelName, setChannelName] = useState("");
 	const [createChannel, { isLoading, isError }] = useCreateChannelMutation(); 
@@ -24,8 +29,9 @@ export const AddChannel = () => {
 		}
 
 		try {
-			await createChannel({ name: channelName }).unwrap();
+			const newChannel = await createChannel({ name: channelName }).unwrap();
 			onOpenChange();
+			onAddChannel(newChannel);
 		} catch (error) {
 			console.error("Error creating channel:", error);
 			alert("Failed to create channel");
