@@ -45,6 +45,9 @@
 }
 .chat-list {
 	padding: 8px 16px;
+	height: calc(100% - 56px);
+	overflow-y: auto;
+	overflow-x: hidden;
 }
 .chat-item {
 	display: grid;

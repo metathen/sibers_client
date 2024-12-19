@@ -6,10 +6,13 @@ import { useAppSelector } from '../../hooks';
 import { useNavigate } from 'react-router-dom';
 import { useGetAllMessagesMutation } from '../../app/services/channelsApi';
 import useSocket from '../../hooks/send-message';
-import { Messages } from '../../app/types';
+import { Channels, Messages } from '../../app/types';
 
-export const Nav = () => {
-	const channels = useAppSelector((state) => state.auth.user?.channels);
+type ChannelListProps = {
+  channels: Channels[];
+};
+
+export const Nav = ({channels}: ChannelListProps) => {
   const navigate = useNavigate();
   const handleChannelClick = (channelId: string) => {
     navigate(`/channels/${channelId}`);
@@ -41,16 +44,10 @@ export const Nav = () => {
     }));
   };
 
-  const socketConnections = channels?.map((channel) => {
-    return useSocket({
-      channelId: channel.id,
-      onReceiveMessage: handleNewMessage,
-    });
-  });
-
   useEffect(() => {
     fetchLastMessages();
   }, [channels]);
+  console.log(channels)
   return (
 	  <div className={styled['chat-nav']}>
       <Search />
